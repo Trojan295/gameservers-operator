@@ -1,0 +1,58 @@
+image: docker:19
+
+variables:
+  APPLICATION_NAME: gameservers-operator
+
+stages:
+  - test
+  - build
+  - release
+
+lint_and_test:
+  stage: test
+  image: golang:1.13-alpine
+  before_script:
+    - apk update
+    - apk add gcc musl-dev
+  script:
+    - go fmt ./...
+    - go vet ./...
+    - go test ./...
+
+.docker: &docker
+  services:
+    - docker:19-dind
+  variables:
+    OPERATOR_SDK_VERSION: v0.12.0
+  before_script:
+    - echo '@edge http://nl.alpinelinux.org/alpine/edge/community' >> /etc/apk/repositories
+    - apk update
+    - apk add go@edge git mercurial
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker login -u "$DOCKERHUB_USER" -p "$DOCKERHUB_PASSWORD"
+    - wget -O /usr/local/bin/operator-sdk https://github.com/operator-framework/operator-sdk/releases/download/${OPERATOR_SDK_VERSION}/operator-sdk-${OPERATOR_SDK_VERSION}-x86_64-linux-gnu
+    - chmod +x /usr/local/bin/operator-sdk
+
+build_docker:
+  <<: *docker
+  stage: build
+  script:
+    - operator-sdk build "$CI_REGISTRY_IMAGE/$APPLICATION_NAME:$CI_COMMIT_SHA"
+
+latest_release_docker:
+  <<: *docker
+  stage: release
+  script:
+    - operator-sdk build "trojan295/gameservers-operator"
+    - docker push "trojan295/gameservers-operator"
+  only:
+    - master
+
+tag_release_docker:
+  <<: *docker
+  stage: release
+  script:
+    - operator-sdk build "trojan295/gameservers-operator:$CI_COMMIT_TAG"
+    - docker push "trojan295/gameservers-operator:$CI_COMMIT_TAG"
+  only:
+    - tags
