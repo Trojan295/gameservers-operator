@@ -1,0 +1,6 @@
+apiVersion: chinchilla.io/v1
+kind: Teamspeak
+metadata:
+  name: example-teamspeak
+spec:
+  version: "3.9"

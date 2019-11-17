@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gameservers-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: gameservers-operator
+  template:
+    metadata:
+      labels:
+        name: gameservers-operator
+    spec:
+      serviceAccountName: gameservers-operator
+      containers:
+        - name: gameservers-operator
+          # Replace this with the built image name
+          image: REPLACE_IMAGE
+          command:
+          - gameservers-operator
+          imagePullPolicy: Always
+          env:
+            - name: WATCH_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "gameservers-operator"
