@@ -36,8 +36,11 @@ spec:
           properties:
             address:
               type: string
+            nodeName:
+              type: string
           required:
           - address
+          - nodeName
           type: object
       type: object
   version: v1

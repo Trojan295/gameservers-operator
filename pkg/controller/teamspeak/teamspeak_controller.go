@@ -88,6 +88,7 @@ func (r *ReconcileTeamspeak) Reconcile(request reconcile.Request) (reconcile.Res
 			return reconcile.Result{}, errors.NewTooManyRequestsError("cannot find free IP address")
 		}
 
+		instance.Status.NodeName = node.Name
 		instance.Status.Address = ipAddress
 		if err := r.client.Update(context.TODO(), instance); err != nil {
 			return reconcile.Result{}, err
@@ -156,7 +157,6 @@ func (r *ReconcileTeamspeak) reconcilePod(instance *chinchillav1.Teamspeak, reqL
 			return err
 		}
 
-		// Pod created successfully - don't requeue
 		return nil
 	} else if err != nil {
 		return err
@@ -187,6 +187,7 @@ func newPod(cr *chinchillav1.Teamspeak) *corev1.Pod {
 					},
 				},
 			},
+			NodeName: cr.Status.NodeName,
 		},
 	}
 }
@@ -251,5 +252,4 @@ func getPodLabels(cr *chinchillav1.Teamspeak) map[string]string {
 		"app":                        cr.Name,
 		"chinchilla.gameserver.type": "teamspeak",
 	}
-
 }

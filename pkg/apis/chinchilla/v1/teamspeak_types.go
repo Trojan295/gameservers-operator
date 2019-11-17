@@ -9,7 +9,8 @@ type TeamspeakSpec struct {
 }
 
 type TeamspeakStatus struct {
-	Address string `json:"address"`
+	Address  string `json:"address"`
+	NodeName string `json:"nodeName"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
