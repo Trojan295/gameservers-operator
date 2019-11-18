@@ -1,4 +1,4 @@
-image: docker:19
+image: docker:19.03.1
 
 variables:
   APPLICATION_NAME: gameservers-operator
@@ -21,7 +21,7 @@ lint_and_test:
 
 .docker: &docker
   services:
-    - docker:19-dind
+    - docker:19.03.1-dind
   variables:
     OPERATOR_SDK_VERSION: v0.12.0
   before_script:

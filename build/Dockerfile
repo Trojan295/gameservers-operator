@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
+FROM alpine:3.10
 
 ENV OPERATOR=/usr/local/bin/gameservers-operator \
     USER_UID=1001 \
