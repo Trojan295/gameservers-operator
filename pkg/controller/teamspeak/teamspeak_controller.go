@@ -225,7 +225,7 @@ func (r *ReconcileTeamspeak) reconcileService(instance *chinchillav1.Teamspeak, 
 func newService(cr *chinchillav1.Teamspeak) *corev1.Service {
 	return &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      cr.Name + "-svc",
+			Name:      "ts-" + cr.Name + "-svc",
 			Namespace: cr.Namespace,
 		},
 		Spec: corev1.ServiceSpec{
